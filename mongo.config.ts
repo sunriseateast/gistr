@@ -1,8 +1,8 @@
 // mongo_config.ts
 import { connectMongoDB } from "./db/mongo.con.js";
-import { logger } from "./logger.js";
+import { logger } from "./logger";
 
-(async (): Promise<void> => {
+(async ()=>{
   try {
     // Make sure to replace with proper Mongo URI
     await connectMongoDB("http://MONGO_IP:MONGO_PORT");

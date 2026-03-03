@@ -49,7 +49,9 @@ export const searchEntities=asyncHandler(async(req: Request <{},{},{},SearchQuer
 
 
     let foundTags
-    //find tags in Tags collection
+
+
+    //Namspace only respect when mode is or
     if(includNamespace && mode === "or"){
 
       //first we get namespace of that tag

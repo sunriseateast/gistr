@@ -6,16 +6,17 @@ import { TagRelation } from "../models/tagRelations.model";
 import mongoose from "mongoose";
 
 interface AttachTagsBody {
-    entityId: string,
-    tags: string[],
-    entityType: string,
-    attachedBy: string,
+    entityId?: string,
+    tags?: string[],
+    entityType?: string,
+    attachedBy?: string,
+    includNamespace?: string
 }
 
 export const attachTags=asyncHandler(async(req: Request <{},{},AttachTagsBody>, res: Response)=>{
-    const { entityId, tags,entityType,attachedBy } = req.body
+    const { entityId, tags, entityType, attachedBy, includNamespace } = req.body
 
-    if(!entityId || !Array.isArray(tags)) {
+    if(!entityId || !Array.isArray(tags) || !entityType || !attachedBy || !includNamespace) {
         throw createError(400,"Invalid Payload")
     }
 
@@ -49,7 +50,7 @@ export const attachTags=asyncHandler(async(req: Request <{},{},AttachTagsBody>, 
         //this is will ensure no duplicate document in Tag collection
         const tag = await Tag.findOneAndUpdate(
           { slug },
-          { $setOnInsert: { name: tagName, slug } },
+          { $setOnInsert: { name: tagName, slug, includNamespace } },
           { upsert: true, new: true, session }
         );
 

@@ -18,12 +18,6 @@ const tagSchema = new Schema(
       type: Number,
       default: 0
     },
-
-    usageByType: {
-      source: { type: Number, default: 0 },
-      snippet: { type: Number, default: 0 },
-      airesponse: { type: Number, default: 0 }
-    }
   },
   { timestamps: true }
 );

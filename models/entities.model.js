@@ -6,7 +6,7 @@ const entitySchema = new Schema(
       type: String,
       enum: ["source", "snippet", "airesponse"],
       required: true,
-      index: true
+      index: true,
     },
 
     title: String,
@@ -15,16 +15,16 @@ const entitySchema = new Schema(
 
     sourceId: {
       type: Schema.Types.ObjectId,
-      ref: "Entity"
+      ref: "Entity",
     },
 
     metadata: {
-      type: Schema.Types.Mixed
+      type: Schema.Types.Mixed,
     },
 
-    deletedAt: Date
+    deletedAt: Date,
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 entitySchema.index({ type: 1, createdAt: -1 });

@@ -17,6 +17,7 @@
     "pino": "^10.3.1"
   },
   "devDependencies": {
-    "@types/express": "^5.0.6"
+    "@types/express": "^5.0.6",
+    "prettier": "3.8.1"
   }
 }

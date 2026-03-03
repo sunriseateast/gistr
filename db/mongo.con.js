@@ -1,6 +1,6 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
-export const connectMongoDB=async(connectionURL)=>{
-    const connection=await mongoose.connect(connectionURL)
-    return connection
-}
+export const connectMongoDB = async (connectionURL) => {
+  const connection = await mongoose.connect(connectionURL);
+  return connection;
+};

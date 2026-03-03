@@ -4,31 +4,31 @@ const tagSchema = new Schema(
   {
     name: {
       type: String,
-      required: true
+      required: true,
     },
 
     slug: {
       type: String,
       required: true,
       unique: true,
-      index: true
+      index: true,
     },
 
     namespace: {
       type: String,
       required: true,
-      index: true
+      index: true,
     },
 
     usageCount: {
       type: Number,
-      default: 0
+      default: 0,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-tagSchema.index({ slug: 1 }, { unique: true })
-tagSchema.index({ usageCount: -1 })  //Top newest tags fast.
+tagSchema.index({ slug: 1 }, { unique: true });
+tagSchema.index({ usageCount: -1 }); //Top newest tags fast.
 
 export const Tag = model("Tag", tagSchema);

@@ -5,7 +5,12 @@ interface CustomError extends Error {
   status?: number;
 }
 
-const serverErrorHandler: ErrorRequestHandler = (err: CustomError, req, res, next) => {
+const serverErrorHandler: ErrorRequestHandler = (
+  err: CustomError,
+  req,
+  res,
+  next,
+) => {
   const statusCode = err.statusCode || err.status || 500;
   const message = err.message || "Internal Server Error";
 

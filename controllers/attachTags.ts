@@ -93,7 +93,8 @@ export const attachTags=asyncHandler(async(req: Request <{},{},AttachTagsBody>, 
         tags: attachedTags
       });
 
-    } catch (error) {
+    } 
+    catch (error) {
       await session.abortTransaction();
       session.endSession();
       throw error;

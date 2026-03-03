@@ -14,6 +14,12 @@ const tagSchema = new Schema(
       index: true
     },
 
+    namespace: {
+      type: String,
+      required: true,
+      index: true
+    },
+
     usageCount: {
       type: Number,
       default: 0

@@ -1,16 +1,19 @@
+// mongo_config.ts
 import { connectMongoDB } from "./db/mongo.con.js";
 import { logger } from "./logger.js";
 
-(async () => {
+(async (): Promise<void> => {
   try {
-    await connectMongoDB("http://MONGO_IP:MOMGO_PORT");
+    // Make sure to replace with proper Mongo URI
+    await connectMongoDB("http://MONGO_IP:MONGO_PORT");
     logger.info(
       {
         event: "MONGO_CONNECTED",
       },
-      "MongoDb successfully connected",
+      "MongoDb successfully connected"
     );
-  } catch (error) {
+  } 
+  catch (error: unknown) {
     logger.error(error, "MongoDb connection error from mongo_config");
   }
 })();

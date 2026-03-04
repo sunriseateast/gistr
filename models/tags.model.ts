@@ -28,7 +28,7 @@ const tagSchema = new Schema(
   { timestamps: true },
 );
 
-tagSchema.index({ slug: 1 }, { unique: true });
+
 tagSchema.index({ usageCount: -1 }); //Top newest tags fast.
 
 export const Tag = model("Tag", tagSchema);

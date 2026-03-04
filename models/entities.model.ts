@@ -9,10 +9,6 @@ const entitySchema = new Schema(
       index: true,
     },
 
-    title: String,
-    url: String,
-    content: String,
-
     sourceId: {
       type: Schema.Types.ObjectId,
       ref: "Entity",
@@ -20,14 +16,12 @@ const entitySchema = new Schema(
 
     metadata: {
       type: Schema.Types.Mixed,
-    },
-
-    deletedAt: Date,
+    }
+    
   },
   { timestamps: true },
 );
 
-entitySchema.index({ type: 1, createdAt: -1 });
-entitySchema.index({ sourceId: 1 });
+entitySchema.index({ createdAt: -1 });
 
 export const Entity = model("Entity", entitySchema);

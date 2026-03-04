@@ -5,8 +5,7 @@ const entitySchema = new Schema(
     type: {
       type: String,
       enum: ["source", "snippet", "airesponse"],
-      required: true,
-      index: true,
+      required: true
     },
 
     sourceId: {

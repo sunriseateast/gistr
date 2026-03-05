@@ -10,7 +10,7 @@ interface SearchQuery {
   mode?: "and" | "or";
   page?: string;
   limit?: string;
-  includNamespace?: string;
+  includeNameSpace?: string;
 }
 
 //To search entities
@@ -22,10 +22,22 @@ interface SearchQuery {
 export const searchEntities = asyncHandler(
   async (req: Request<{}, {}, {}, SearchQuery>, res: Response) => {
     try {
-      const { tags, mode, page, limit, includNamespace } = req.query;
+      const { tags, mode, page, limit, includeNameSpace } = req.query;
 
-      if (!tags) {
-        throw createError(400, "Tags are required");
+      if (!tags || !mode) {
+         throw createError(400, "tags and mode query parameters are required");
+      }
+
+      if (typeof tags !== "string") {
+        throw createError(400, "tags must be a string");
+      }
+
+      if (mode !== "and" && mode !== "or") {
+        throw createError(400, "mode must be either 'and' or 'or'");
+      }
+
+      if (includeNameSpace !== undefined && includeNameSpace !== "true" && includeNameSpace !== "false") {
+        throw createError(400, "includeNameSpace must be either 'true' or 'false'");
       }
 
       //pagination number
@@ -39,29 +51,17 @@ export const searchEntities = asyncHandler(
         .map((tag) => tag.trim().toLowerCase()) // normalize
         .filter((tag) => tag.length > 0);
 
-      if (tagArray.length === 0) {
-        throw createError(400, "Invalid tags");
-      }
-
       let foundTags;
 
       //Namspace only respect when mode is or
-      if (includNamespace && mode === "or") {
+      if (includeNameSpace && mode === "or") {
         //first we get namespace of that tag
         const requestedTags = await Tag.find({
           slug: { $in: tagArray },
         }).select("_id namespace slug");
 
         if (requestedTags.length === 0) {
-          return res.status(200).json({
-            success: true,
-            message: {
-              total: 0,
-              page: pageNumber,
-              limit: limitNumber,
-              data: [],
-            },
-          });
+          throw createError(400,"Tags not found for connected namespaces")
         }
 
         const namespaces = [
@@ -71,22 +71,20 @@ export const searchEntities = asyncHandler(
         //then we get all tags with that namespaces
         foundTags = await Tag.find({
           namespace: { $in: namespaces },
-        }).select("_id slug");
+        }).select("_id slug")
+
+        if (foundTags.length === 0) {
+          throw createError(400,"TagIds not found for connected namespaces")
+        }
+
+
       } else {
         foundTags = await Tag.find({
           slug: { $in: tagArray },
         }).select("_id slug");
 
         if (foundTags.length === 0) {
-          return res.status(200).json({
-            success: true,
-            messgae: {
-              total: 0,
-              page: pageNumber,
-              limit: limitNumber,
-              data: [],
-            },
-          });
+          throw createError(400,"TagIds not found")
         }
       }
 
@@ -125,15 +123,7 @@ export const searchEntities = asyncHandler(
       }
 
       if (entityIds.length === 0) {
-        return res.status(200).json({
-          success: true,
-          messgae: {
-            total: 0,
-            page: pageNumber,
-            limit: limitNumber,
-            data: [],
-          },
-        });
+       throw createError(400,"EntityIds not found")
       }
 
       //Step4: Show data on basis of provided page and limit

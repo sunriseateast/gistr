@@ -1,4 +1,4 @@
-# 🚀 Full Stack Assignment -- V2 (Production-Oriented)
+# 🚀 Full Stack Assignment
 
 ------------------------------------------------------------------------
 

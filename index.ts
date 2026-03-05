@@ -19,7 +19,7 @@ const PORT = process.env.PORT || 7000
 
 //middlewares
 app.use(express.json());
-app.use('/app',analytics_routes)
+app.use('/app/get-analytics',analytics_routes)
 app.use('/app',search_routes)
 app.use('/app',tag_routes)
 

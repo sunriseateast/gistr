@@ -5,81 +5,55 @@ import { Tag } from "../models/tags.model.js";
 import { TagRelation } from "../models/tagRelations.model.js";
 
 interface AnalyticsQuery {
-  days?: string;
+  days?: string
 }
 
-export const getTagAnalytics = asyncHandler(
-  async (req: Request<{}, {}, {}, AnalyticsQuery>, res: Response) => {
-    try {
-      const { days } = req.query;
+interface EntityType {
+  entityType?: string
+}
 
-      //find total usage per tag
-      const tags = await Tag.find({})
+
+//Total usage count per tag
+export const getTagsUsage = asyncHandler(
+  async(req: Request, res: Response)=>{
+    try{
+        const tags = await Tag.find({})
         .select("name slug namespace usageCount")
         .sort({ usageCount: -1 });
 
-      //top tags in ndays by using tagreleation where
-      //releation gets created
-      let topTagsLastNDays: any[] = [];
-      let tagsUsagebyEntity: any[] = [];
-
-      if (days) {
-        const daysNumber = parseInt(days);
-        const thresholdDate = new Date();
-        thresholdDate.setDate(thresholdDate.getDate() - daysNumber);
-
-        topTagsLastNDays = await TagRelation.aggregate([
-          //filder by date
-          {
-            $match: {
-              createdAt: { $gte: thresholdDate },
-            },
+        return res.status(200).json({
+          success: true,
+          data: {
+            tags
           },
+        });
+    }
+    catch(error){
+      throw createError(500, `Someting went wrong in getUsage:${error}`);
+    }
+  }
+)
 
-          //group by TagId
-          {
-            $group: {
-              _id: "$tagId",
-              usage: { $sum: 1 },
-            },
-          },
 
-          // sort descending
-          {
-            $sort: { usage: -1 },
-          },
 
-          // join with Tag collection
-          {
-            $lookup: {
-              from: "tags", // the other collection
-              localField: "_id", // tagId from TagRelation group
-              foreignField: "_id", // matching _id in Tag collection
-              as: "tag",
-            },
-          },
+//Usage count broken down by entity type
+export const tagUsagebyEntity = asyncHandler(
+  async(req:Request<{}, {}, {}, EntityType>,res:Response)=>{
+    try{
+      const { entityType }=req.query
 
-          //flattern the array
-          {
-            $unwind: "$tag",
-          },
-
-          //shape output
-          {
-            $project: {
-              _id: 0,
-              tagId: "$_id",
-              name: "$tag.name",
-              slug: "$tag.slug",
-              namespace: "$tag.namespace",
-              usage: 1,
-            },
-          },
-        ]);
+      if( !entityType ){
+        throw createError(400,"Entity type required")
       }
 
+      let tagsUsagebyEntity: any[] = [];
       //usage count broken down by entity type
       tagsUsagebyEntity = await TagRelation.aggregate([
+        {
+          $match: {
+            entityType: entityType,
+          }
+        },
         {
           $group: {
             _id: {
@@ -94,14 +68,92 @@ export const getTagAnalytics = asyncHandler(
       return res.status(200).json({
         success: true,
         data: {
-          tags,
-          topTagsLastNDays,
           tagsUsagebyEntity,
+        },
+      });
+
+    }
+    catch(error){
+      throw createError(500, `Someting went wrong in tagUsagebyEntity:${error}`);
+    }
+  }
+)
+
+
+
+//Top tags in the last `N` days
+export const tagUsageDays = asyncHandler(
+  async (req: Request<{}, {}, {}, AnalyticsQuery>, res: Response) => {
+    try {
+      const { days } = req.query;
+
+      if(!days){
+        throw createError(400,"Provide Nummber of Days")
+      }
+
+      let topTagsLastNDays: any[] = [];
+      const daysNumber = parseInt(days);
+      const thresholdDate = new Date();
+      thresholdDate.setDate(thresholdDate.getDate() - daysNumber);
+
+      topTagsLastNDays = await TagRelation.aggregate([
+        //filder by date
+        {
+          $match: {
+            createdAt: { $gte: thresholdDate },
+          },
+        },
+
+        //group by TagId
+        {
+          $group: {
+            _id: "$tagId",
+            usage: { $sum: 1 },
+          },
+        },
+
+        // sort descending
+        {
+          $sort: { usage: -1 },
+        },
+
+        // join with Tag collection
+        {
+          $lookup: {
+            from: "tags", // the other collection
+            localField: "_id", // tagId from TagRelation group
+            foreignField: "_id", // matching _id in Tag collection
+            as: "tag",
+          },
+        },
+
+        //flattern the array
+        {
+          $unwind: "$tag",
+        },
+
+        //shape output
+        {
+          $project: {
+            _id: 0,
+            tagId: "$_id",
+            name: "$tag.name",
+            slug: "$tag.slug",
+            namespace: "$tag.namespace",
+            usage: 1,
+          },
+        },
+      ]);
+
+      return res.status(200).json({
+        success: true,
+        data: {
+          topTagsLastNDays
         },
       });
     }
     catch (error) {
-      throw createError(500, `Someting went wrong:${error}`);
+      throw createError(500, `Someting went wrong in tagUsageDays:${error}`);
     }
   },
 );

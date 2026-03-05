@@ -3,7 +3,6 @@ import asyncHandler from "../asyncHandler.js";
 import createError from "http-errors";
 import { Tag } from "../models/tags.model.js";
 import { TagRelation } from "../models/tagRelations.model.js";
-import mongoose from "mongoose";
 
 interface AttachTagsBody {
   entityId?: string;
@@ -42,10 +41,7 @@ export const attachTags = asyncHandler(
       //instead of multiple transcation so either it
       //success or failed at once to overcome from
       //tiny window probllem of (if system crashes)
-      const session = await mongoose.startSession();
-      session.startTransaction();
 
-      try {
         const attachedTags = [];
 
         for (const tagName of normalizedTags) {
@@ -55,7 +51,7 @@ export const attachTags = asyncHandler(
           const tag = await Tag.findOneAndUpdate(
             { slug },
             { $setOnInsert: { name: tagName, slug, includNamespace } },
-            { upsert: true, new: true, session },
+            { upsert: true, new: true},
           );
 
           //create relation in Tag relation collection
@@ -69,7 +65,7 @@ export const attachTags = asyncHandler(
                 attachedBy,
               },
             },
-            { upsert: true, session },
+            { upsert: true},
           );
 
           //if there are unique relation then only we
@@ -78,26 +74,17 @@ export const attachTags = asyncHandler(
             await Tag.updateOne(
               { _id: tag._id },
               { $inc: { usageCount: 1 } },
-              { session },
             );
           }
 
           attachedTags.push(tag);
         }
 
-        await session.commitTransaction();
-        session.endSession();
-
         res.status(201).json({
           success: true,
           tags: attachedTags,
         });
-      } catch (error) {
-        await session.abortTransaction();
-        session.endSession();
-        throw error;
-      }
-    } 
+      } 
     catch (error) {
       throw createError(500, `Someting went wrong:${error}`);
     }

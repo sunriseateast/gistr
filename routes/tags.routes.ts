@@ -1,5 +1,5 @@
 import express from 'express'
-import { attachTags } from '../controllers/attachTags.ts'
+import { attachTags } from '../controllers/attachTags.js'
 
 const router=express.Router()
 

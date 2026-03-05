@@ -1,5 +1,5 @@
 import type { ErrorRequestHandler } from "express";
-import { logger } from "../logger.ts";
+import { logger } from "../logger.js";
 
 interface CustomError extends Error {
   statusCode?: number;

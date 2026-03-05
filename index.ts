@@ -1,17 +1,19 @@
 import express from "express"
+import 'dotenv/config'
+
 
 //middlewares
-import serverErrorHandler from "./middlewares/serverErrorhandler.ts"
+import serverErrorHandler from "./middlewares/serverErrorhandler.js"
 
 //routes
-import analytics_routes from './routes/analytics.routes.ts'
-import search_routes from './routes/search.routes.ts'
-import tag_routes from './routes/tags.routes.ts'
+import analytics_routes from './routes/analytics.routes.js'
+import search_routes from './routes/search.routes.js'
+import tag_routes from './routes/tags.routes.js'
 
 
 
 const app = express()
-const PORT = 9000
+const PORT = process.env.PORT || 7000
 
 
 //middlewares
@@ -25,5 +27,5 @@ app.use(serverErrorHandler) //user define error handler
 
 
 app.listen(PORT, () => {
-  console.log("server is listening");
+  console.log(`server is listening on port:${PORT}`);
 });

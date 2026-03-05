@@ -1,8 +1,8 @@
 import type { Request, Response } from "express";
-import asyncHandler from "../asyncHandler.ts";
-import createError from "http-errors";
-import { Tag } from "../models/tags.model.ts";
-import { TagRelation } from "../models/tagRelations.model.ts";
+import asyncHandler from "../asyncHandler.js";
+import * as createError from "http-errors";
+import { Tag } from "../models/tags.model.js";
+import { TagRelation } from "../models/tagRelations.model.js";
 
 interface AnalyticsQuery {
   days?: string;

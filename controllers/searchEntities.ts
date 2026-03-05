@@ -1,9 +1,9 @@
 import type { Request, Response } from "express";
-import asyncHandler from "../asyncHandler.ts";
+import asyncHandler from "../asyncHandler.js";
 import createError from "http-errors";
-import { Tag } from "../models/tags.model.ts";
-import { TagRelation } from "../models/tagRelations.model.ts";
-import { Entity } from "../models/entities.model.ts";
+import { Tag } from "../models/tags.model.js";
+import { TagRelation } from "../models/tagRelations.model.js";
+import { Entity } from "../models/entities.model.js";
 
 interface SearchQuery {
   tags?: string;

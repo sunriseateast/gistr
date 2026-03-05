@@ -1,5 +1,5 @@
 import express from 'express'
-import { getTagAnalytics } from '../controllers/getAnalytics.ts'
+import { getTagAnalytics } from '../controllers/getAnalytics.js'
 
 const router=express.Router()
 

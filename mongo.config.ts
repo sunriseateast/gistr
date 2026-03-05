@@ -1,6 +1,6 @@
 // mongo_config.ts
 import { connectMongoDB } from "./db/mongo.con.js";
-import { logger } from "./logger";
+import { logger } from "./logger.js";
 
 (async ()=>{
   try {

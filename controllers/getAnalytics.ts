@@ -46,6 +46,12 @@ export const tagUsagebyEntity = asyncHandler(
         throw createError(400,"Entity type required")
       }
 
+      // validate type
+      if (typeof entityType !== "string") {
+        throw createError(400, "Entity type must be a string");
+      }
+
+      
       let tagsUsagebyEntity: any[] = [];
       //usage count broken down by entity type
       tagsUsagebyEntity = await TagRelation.aggregate([
@@ -91,8 +97,14 @@ export const tagUsageDays = asyncHandler(
         throw createError(400,"Provide Nummber of Days")
       }
 
-      let topTagsLastNDays: any[] = [];
       const daysNumber = parseInt(days);
+      // check if valid number
+      if (isNaN(daysNumber) || daysNumber <= 0) {
+        throw createError(400, "Days must be a valid positive number");
+      }
+
+
+      let topTagsLastNDays: any[] = [];
       const thresholdDate = new Date();
       thresholdDate.setDate(thresholdDate.getDate() - daysNumber);
 

@@ -1,12 +1,12 @@
 import express from "express"
 
 //middlewares
-import serverErrorHandler from "./middlewares/serverErrorhandler"
+import serverErrorHandler from "./middlewares/serverErrorhandler.ts"
 
 //routes
-import analytics_routes from './routes/analytics.routes'
-import search_routes from './routes/search.routes'
-import tag_routes from './routes/tags.routes'
+import analytics_routes from './routes/analytics.routes.ts'
+import search_routes from './routes/search.routes.ts'
+import tag_routes from './routes/tags.routes.ts'
 
 
 

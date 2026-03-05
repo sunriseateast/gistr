@@ -10,7 +10,8 @@ import analytics_routes from './routes/analytics.routes.js'
 import search_routes from './routes/search.routes.js'
 import tag_routes from './routes/tags.routes.js'
 
-
+//connect mongodb
+import "./mongo.config.js";
 
 const app = express()
 const PORT = process.env.PORT || 7000

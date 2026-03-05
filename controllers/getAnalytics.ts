@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import asyncHandler from "../asyncHandler.js";
-import * as createError from "http-errors";
+import createError from "http-errors";
 import { Tag } from "../models/tags.model.js";
 import { TagRelation } from "../models/tagRelations.model.js";
 
